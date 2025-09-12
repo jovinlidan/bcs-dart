@@ -3,11 +3,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:bcs/index.dart';
-import 'package:bcs/consts.dart';
-import 'package:bcs/reader.dart';
-import 'package:bcs/utils.dart';
-import 'package:bcs/writer.dart';
+import 'package:bcs_dart/index.dart';
+import 'package:bcs_dart/consts.dart';
+import 'package:bcs_dart/reader.dart';
+import 'package:bcs_dart/utils.dart';
+import 'package:bcs_dart/writer.dart';
 
 const SUI_ADDRESS_LENGTH = 32;
 

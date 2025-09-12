@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:bcs/bcs_type.dart';
-import 'package:bcs/uleb.dart';
+import 'package:bcs_dart/bcs_type.dart';
+import 'package:bcs_dart/uleb.dart';
 
 class BcsWriterOptions {
   /// The initial size (in bytes) of the buffer tht will be allocated
   int? size;
+
   /// The maximum size (in bytes) that the buffer is allowed to grow to
   int? maxSize;
+
   /// The amount of bytes that will be allocated whenever additional memory is required
   int? allocateSize;
 
@@ -16,7 +18,7 @@ class BcsWriterOptions {
 }
 
 class Bcs {
-  static BcsType<int,dynamic> u8([BcsTypeOptions<int,int>? options]) {
+  static BcsType<int, dynamic> u8([BcsTypeOptions<int, int>? options]) {
     return uIntBcsType(
       name: 'u8',
       readMethod: 'read8',
@@ -27,7 +29,7 @@ class Bcs {
     );
   }
 
-  static BcsType<int,dynamic> u16([BcsTypeOptions<int,int>? options]) {
+  static BcsType<int, dynamic> u16([BcsTypeOptions<int, int>? options]) {
     return uIntBcsType(
       name: 'u16',
       readMethod: 'read16',
@@ -38,7 +40,7 @@ class Bcs {
     );
   }
 
-  static BcsType<int,dynamic> u32([BcsTypeOptions<int,int>? options]) {
+  static BcsType<int, dynamic> u32([BcsTypeOptions<int, int>? options]) {
     return uIntBcsType(
       name: 'u32',
       readMethod: 'read32',
@@ -49,7 +51,7 @@ class Bcs {
     );
   }
 
-  static BcsType<BigInt,dynamic> u64([BcsTypeOptions<String, dynamic>? options]) {
+  static BcsType<BigInt, dynamic> u64([BcsTypeOptions<String, dynamic>? options]) {
     return bigUIntBcsType(
       name: 'u64',
       readMethod: 'read64',
@@ -60,7 +62,7 @@ class Bcs {
     );
   }
 
-  static BcsType<BigInt,dynamic> u128([BcsTypeOptions<String, dynamic>? options]) {
+  static BcsType<BigInt, dynamic> u128([BcsTypeOptions<String, dynamic>? options]) {
     return bigUIntBcsType(
       name: 'u128',
       readMethod: 'read128',
@@ -71,7 +73,7 @@ class Bcs {
     );
   }
 
-  static BcsType<BigInt,dynamic> u256([BcsTypeOptions<String, dynamic>? options]) {
+  static BcsType<BigInt, dynamic> u256([BcsTypeOptions<String, dynamic>? options]) {
     return bigUIntBcsType(
       name: 'u256',
       readMethod: 'read256',
@@ -82,8 +84,8 @@ class Bcs {
     );
   }
 
-  static BcsType<bool,dynamic> boolean([BcsTypeOptions<bool,bool>? options]) {
-    return fixedSizeBcsType<bool,dynamic>(
+  static BcsType<bool, dynamic> boolean([BcsTypeOptions<bool, bool>? options]) {
+    return fixedSizeBcsType<bool, dynamic>(
       name: 'Bool',
       size: 1,
       read: (reader) => reader.read8() == 1,
@@ -94,8 +96,8 @@ class Bcs {
     );
   }
 
-  static BcsType<int,int> uleb128([BcsTypeOptions<int,int>? options]) {
-    return dynamicSizeBcsType<int,int>(
+  static BcsType<int, int> uleb128([BcsTypeOptions<int, int>? options]) {
+    return dynamicSizeBcsType<int, int>(
       name: 'uleb128',
       read: (reader) => reader.readULEB(),
       serialize: (value, {BcsWriterOptions? options}) {
@@ -105,8 +107,9 @@ class Bcs {
     );
   }
 
-  static BcsType<Uint8List,Uint8List> bytes(int size, [BcsTypeOptions<Uint8List, Iterable<int>>? options]) {
-    return fixedSizeBcsType<Uint8List,Uint8List>(
+  static BcsType<Uint8List, Uint8List> bytes(int size,
+      [BcsTypeOptions<Uint8List, Iterable<int>>? options]) {
+    return fixedSizeBcsType<Uint8List, Uint8List>(
       name: 'bytes[$size]',
       size: size,
       read: (reader) => reader.readBytes(size),
@@ -124,7 +127,7 @@ class Bcs {
     );
   }
 
-  static BcsType<String,dynamic> string([BcsTypeOptions<String, String>? options]) {
+  static BcsType<String, dynamic> string([BcsTypeOptions<String, String>? options]) {
     return stringLikeBcsType(
       name: 'string',
       toBytes: (value) => Uint8List.fromList(utf8.encode(value)),
@@ -133,11 +136,8 @@ class Bcs {
     );
   }
 
-  static BcsType<List<T>, Iterable<Input>> fixedArray<T, Input>(
-    int size,
-    BcsType<T, Input> type,
-    [BcsTypeOptions<List<T>, Iterable<Input>>? options]
-  ) {
+  static BcsType<List<T>, Iterable<Input>> fixedArray<T, Input>(int size, BcsType<T, Input> type,
+      [BcsTypeOptions<List<T>, Iterable<Input>>? options]) {
     return BcsType<List<T>, Iterable<Input>>(
       name: '${type.name}[$size]',
       read: (reader) {
@@ -181,10 +181,8 @@ class Bcs {
     );
   }
 
-  static BcsType<List<T>, dynamic> vector<T, Input>(
-    BcsType<T, Input> type,
-    [BcsTypeOptions<List<T>, Iterable<Input>>? options]
-  ) {
+  static BcsType<List<T>, dynamic> vector<T, Input>(BcsType<T, Input> type,
+      [BcsTypeOptions<List<T>, Iterable<Input>>? options]) {
     return BcsType<List<T>, dynamic>(
       name: 'vector<${type.name}>',
       read: (reader) {
@@ -207,10 +205,7 @@ class Bcs {
     );
   }
 
-  static BcsType<List, List> tuple(
-    List<BcsType> types,
-    [BcsTypeOptions<List, List>? options]
-  ) {
+  static BcsType<List, List> tuple(List<BcsType> types, [BcsTypeOptions<List, List>? options]) {
     return BcsType<List, List>(
       name: '(${types.map((t) => t.name).join(', ')})',
       serializedSize: (values, {BcsWriterOptions? options}) {
@@ -245,11 +240,8 @@ class Bcs {
     );
   }
 
-  static BcsType<Map<String, dynamic>, dynamic> struct(
-    String name,
-    Map<String, BcsType> fields,
-    [BcsTypeOptions<Map<String, dynamic>, Map<String, dynamic>>? options]
-  ) {
+  static BcsType<Map<String, dynamic>, dynamic> struct(String name, Map<String, BcsType> fields,
+      [BcsTypeOptions<Map<String, dynamic>, Map<String, dynamic>>? options]) {
     final canonicalOrder = fields.entries.toList();
 
     return BcsType<Map<String, dynamic>, dynamic>(
@@ -285,10 +277,8 @@ class Bcs {
   }
 
   static BcsType<Map<String, dynamic>, dynamic> enumeration(
-    String name,
-    Map<String, BcsType?> values,
-    [BcsTypeOptions<Map<String, dynamic>, Map<String, dynamic>>? options]
-  ) {
+      String name, Map<String, BcsType?> values,
+      [BcsTypeOptions<Map<String, dynamic>, Map<String, dynamic>>? options]) {
     final canonicalOrder = values.entries.toList();
 
     return BcsType<Map<String, dynamic>, dynamic>(
@@ -316,7 +306,8 @@ class Bcs {
         final value = val is Map ? val : val.toJson();
         final keys = value.keys.where((k) => k != '\$kind' && values.containsKey(k)).toList();
         if (keys.length != 1) {
-          throw ArgumentError('Expected object with one key, but found ${keys.length} for type $name');
+          throw ArgumentError(
+              'Expected object with one key, but found ${keys.length} for type $name');
         }
         if (!values.containsKey(keys[0])) {
           throw ArgumentError('Invalid enum variant ${keys[0]}');
@@ -326,18 +317,14 @@ class Bcs {
   }
 
   static BcsType<Map<K, V>, Map<InputK, InputV>> map<K, V, InputK, InputV>(
-    BcsType<K, InputK> keyType,
-    BcsType<V, InputV> valueType
-  ) {
+      BcsType<K, InputK> keyType, BcsType<V, InputV> valueType) {
     return Bcs.vector(Bcs.tuple([keyType, valueType])).transform(
       name: 'Map<${keyType.name}, ${valueType.name}>',
       input: (Map<InputK, InputV> value) {
         return value.entries.map((e) => [e.key, e.value]).toList();
       },
       output: (List<List> value) {
-        return Map.fromEntries(
-          value.map((e) => MapEntry(e[0] as K, e[1] as V))
-        );
+        return Map.fromEntries(value.map((e) => MapEntry(e[0] as K, e[1] as V)));
       },
     );
   }
@@ -345,5 +332,4 @@ class Bcs {
   static BcsType<T, Input> lazy<T, Input>(BcsType<T, Input> Function() cb) {
     return lazyBcsType(cb);
   }
-
 }

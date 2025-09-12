@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:bcs/bs58.dart';
-import 'package:bcs/hex.dart';
+import 'package:bcs_dart/bs58.dart';
+import 'package:bcs_dart/hex.dart';
 
-enum Encoding {
-  base58, base64, hex
-}
+enum Encoding { base58, base64, hex }
 
 String toB58(Uint8List buffer) => base58Encode(buffer);
 Uint8List fromB58(String str) => base58Decode(str);
@@ -26,9 +24,7 @@ String encodeStr(Uint8List data, Encoding encoding) {
     case Encoding.hex:
       return toHEX(data);
     default:
-      throw ArgumentError(
-        "Unsupported encoding, supported values are: base64, hex"
-      );
+      throw ArgumentError("Unsupported encoding, supported values are: base64, hex");
   }
 }
 
@@ -41,8 +37,6 @@ Uint8List decodeStr(String data, Encoding encoding) {
     case Encoding.hex:
       return fromHEX(data);
     default:
-      throw ArgumentError(
-        "Unsupported encoding, supported values are: base64, hex"
-      );
+      throw ArgumentError("Unsupported encoding, supported values are: base64, hex");
   }
 }

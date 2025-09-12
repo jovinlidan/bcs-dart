@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:bcs/index.dart';
-import 'package:bcs/utils.dart';
+import 'package:bcs_dart/index.dart';
+import 'package:bcs_dart/utils.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:bcs/uleb.dart';
+import 'package:bcs_dart/uleb.dart';
 
 /// Class used for reading BCS data chunk by chunk. Meant to be used
 /// by some wrapper, which will make sure that data is valid and is
@@ -110,7 +110,7 @@ class BcsReader {
 
   /// Read a BCS vector: read a length and then apply function `cb` X times
   /// where X is the length of the vector, defined as ULEB in BCS bytes.
-  /// 
+  ///
   /// Array of the resulting values, returned by callback.
   List<dynamic> readVec(dynamic Function(BcsReader reader, int i, int length) cb) {
     int length = readULEB();

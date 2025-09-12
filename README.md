@@ -7,7 +7,7 @@ This library implements [Binary Canonical Serialization (BCS)](https://github.co
 ## Quickstart
 
 ```dart
-import 'package:bcs/bcs.dart';
+import 'package:bcs_dart/bcs.dart';
 
 // define UID as a 32-byte array, then add a transform to/from hex strings
 final UID = Bcs.fixedArray(32, Bcs.u8()).transform(
@@ -49,17 +49,17 @@ encoded data.
 bcs supports a number of built in base types that can be combined to create more complex types. The
 following table lists the primitive types available:
 
-| Method                | Dart Type      | Dart Input Type                | Description                                                                 |
-| --------------------- | ------------ | ---------------------------- | --------------------------------------------------------------------------- |
-| `bool`                | `bool`    | `bool`                    | Boolean type (converts to `true` / `false`)                                 |
-| `u8`, `u16`, `u32`    | `int`     | `int`                     | Unsigned Integer types                                                      |
-| `u64`, `u128`, `u256` | `BigInt`     | `BigInt` | Unsigned Integer types, decoded as `string` to allow for JSON serialization |
-| `uleb128`             | `int`     | `int`                     | Unsigned LEB128 integer type                                                |
-| `string`              | `String`     | `String`                     | UTF-8 encoded string                                                        |
-| `bytes(size)`         | `Uint8List` | `Uint8List`           | Fixed length bytes                                                          |
+| Method                | Dart Type   | Dart Input Type | Description                                                                 |
+| --------------------- | ----------- | --------------- | --------------------------------------------------------------------------- |
+| `bool`                | `bool`      | `bool`          | Boolean type (converts to `true` / `false`)                                 |
+| `u8`, `u16`, `u32`    | `int`       | `int`           | Unsigned Integer types                                                      |
+| `u64`, `u128`, `u256` | `BigInt`    | `BigInt`        | Unsigned Integer types, decoded as `string` to allow for JSON serialization |
+| `uleb128`             | `int`       | `int`           | Unsigned LEB128 integer type                                                |
+| `string`              | `String`    | `String`        | UTF-8 encoded string                                                        |
+| `bytes(size)`         | `Uint8List` | `Uint8List`     | Fixed length bytes                                                          |
 
 ```dart
-import 'package:bcs/bcs.dart';
+import 'package:bcs_dart/bcs.dart';
 
 final u8 = Bcs.u8().serialize(100).toBytes();
 final u64 = Bcs.u64().serialize(BigInt.from(1000000)).toBytes();
@@ -81,18 +81,18 @@ final parsedBytes = Bcs.bytes(4).parse(bytes);
 For most use-cases you'll want to combine primitive types into more complex types like `vectors`,
 `structs` and `enums`. The following table lists methods available for creating compound types:
 
-| Method                 | Description                                           |
-| ---------------------- | ----------------------------------------------------- |
-| `vector(T type)`      | A variable length list of values of type `T`          |
-| `fixedArray(size, T)`  | A fixed length array of values of type `T`            |
-| `option(T type)`      | A value of type `T` or `null`                         |
-| `enumeration(name, values)`   | An enum value representing one of the provided values |
-| `struct(name, fields)` | A struct with named fields of the provided types      |
-| `tuple(types)`         | A tuple of the provided types                         |
-| `map(K, V)`            | A map of keys of type `K` to values of type `V`       |
+| Method                      | Description                                           |
+| --------------------------- | ----------------------------------------------------- |
+| `vector(T type)`            | A variable length list of values of type `T`          |
+| `fixedArray(size, T)`       | A fixed length array of values of type `T`            |
+| `option(T type)`            | A value of type `T` or `null`                         |
+| `enumeration(name, values)` | An enum value representing one of the provided values |
+| `struct(name, fields)`      | A struct with named fields of the provided types      |
+| `tuple(types)`              | A tuple of the provided types                         |
+| `map(K, V)`                 | A map of keys of type `K` to values of type `V`       |
 
 ```dart
-import 'package:bcs/bcs.dart';
+import 'package:bcs_dart/bcs.dart';
 
 // Vectors
 final intList = Bcs.vector(Bcs.u8()).serialize([1, 2, 3, 4, 5]).toBytes();
@@ -173,8 +173,8 @@ final parsedMap = Bcs.map(Bcs.u8(), Bcs.string()).parse(map);
 To define a generic struct or an enum, you can define a generic typescript function helper
 
 ```dart
-import 'package:bcs/bcs.dart';
-import 'package:bcs/bcs_type.dart';
+import 'package:bcs_dart/bcs.dart';
+import 'package:bcs_dart/bcs_type.dart';
 
 // The T typescript generic is a placeholder for the typescript type of the generic value
 // The T argument will be the bcs type passed in when creating a concrete instance of the Container type

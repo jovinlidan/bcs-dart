@@ -1,4 +1,4 @@
-import 'package:bcs/bcs.dart';
+import 'package:bcs_dart/bcs.dart';
 import 'package:test/test.dart';
 
 void main() {

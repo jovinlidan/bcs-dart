@@ -1,19 +1,15 @@
-
 import 'dart:typed_data';
-import 'package:bcs/index.dart';
-import 'package:bcs/reader.dart';
-import 'package:bcs/writer.dart';
-import 'package:bcs/uleb.dart';
-import 'package:bcs/utils.dart';
+import 'package:bcs_dart/index.dart';
+import 'package:bcs_dart/reader.dart';
+import 'package:bcs_dart/writer.dart';
+import 'package:bcs_dart/uleb.dart';
+import 'package:bcs_dart/utils.dart';
 
 class BcsTypeOptions<T, Input> {
   final String? name;
   final void Function(Input value)? validate;
 
-  BcsTypeOptions({
-    this.name,
-    this.validate
-  });
+  BcsTypeOptions({this.name, this.validate});
 }
 
 class BcsType<T, Input> {
@@ -31,19 +27,18 @@ class BcsType<T, Input> {
     Uint8List Function(Input, {BcsWriterOptions? options})? serialize,
     int? Function(Input, {BcsWriterOptions? options})? serializedSize,
     void Function(Input)? validate,
-  }) : 
-    this.serializedSize = serializedSize ?? ((_, {BcsWriterOptions? options}) => null),
-    this._write = write,
-    this._serialize = serialize ?? ((value, {options}) {
-      final writer = BcsWriter(
-        size: options?.size ?? serializedSize?.call(value) ?? 1024,
-        maxSize: options?.maxSize,
-        allocateSize: options?.allocateSize ?? 1024
-      );
-      write(value, writer);
-      return writer.toBytes();
-    }),
-    this.validate = validate ?? ((_) {});
+  })  : this.serializedSize = serializedSize ?? ((_, {BcsWriterOptions? options}) => null),
+        this._write = write,
+        this._serialize = serialize ??
+            ((value, {options}) {
+              final writer = BcsWriter(
+                  size: options?.size ?? serializedSize?.call(value) ?? 1024,
+                  maxSize: options?.maxSize,
+                  allocateSize: options?.allocateSize ?? 1024);
+              write(value, writer);
+              return writer.toBytes();
+            }),
+        this.validate = validate ?? ((_) {});
 
   void write(Input value, BcsWriter writer) {
     validate(value);

@@ -1,5 +1,5 @@
-import 'package:bcs/legacy_bcs.dart';
-import 'package:bcs/utils.dart';
+import 'package:bcs_dart/legacy_bcs.dart';
+import 'package:bcs_dart/utils.dart';
 import 'package:test/test.dart';
 
 void main() {

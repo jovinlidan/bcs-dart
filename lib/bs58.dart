@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:bcs/base_x.dart';
+import 'package:bcs_dart/base_x.dart';
 
 final base58 = BaseXCodec('123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz');
 

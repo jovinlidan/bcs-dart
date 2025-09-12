@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import 'package:bcs/bcs.dart';
+import 'package:bcs_dart/bcs.dart';
 
 void main() {
   group('BCS: Primitives', () {

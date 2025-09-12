@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:bcs/consts.dart';
-import 'package:bcs/uleb.dart';
-import 'package:bcs/utils.dart';
+import 'package:bcs_dart/consts.dart';
+import 'package:bcs_dart/uleb.dart';
+import 'package:bcs_dart/utils.dart';
 
 /// Class used to write BCS data into a buffer. Initializer requires
 /// some size of a buffer to init; default value for this buffer is 1KB.
@@ -38,8 +38,7 @@ class BcsWriter {
       final nextSize = min(_maxSize, _size + _allocateSize);
       if (requiredSize > nextSize) {
         throw ArgumentError(
-          "Attempting to serialize to BCS, but buffer does not have enough size. Allocated size: $_size, Max size: $_maxSize, Required size: $requiredSize"
-        );
+            "Attempting to serialize to BCS, but buffer does not have enough size. Allocated size: $_size, Max size: $_maxSize, Required size: $requiredSize");
       }
 
       _size = nextSize;
@@ -125,19 +124,14 @@ class BcsWriter {
   /// Write a vector into a buffer by first writing the vector length and then calling
   /// a callback on each passed value.
   BcsWriter writeVec(
-    dynamic vector,
-    dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb
-  ) {
+      dynamic vector, dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb) {
     writeULEB(vector.length);
     List.from(vector).asMap().forEach((i, el) => cb(this, el, i, vector.length));
     return this;
   }
 
-  BcsWriter writeFixedArray(
-    dynamic vector,
-    int? size,
-    dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb
-  ) {
+  BcsWriter writeFixedArray(dynamic vector, int? size,
+      dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb) {
     final lst = List.from(vector);
     lst.sublist(0, size ?? lst.length).asMap().forEach((i, el) => cb(this, el, i, vector.length));
     return this;
@@ -163,5 +157,4 @@ class BcsWriter {
   String base58() {
     return encode(Encoding.base58);
   }
-
 }
