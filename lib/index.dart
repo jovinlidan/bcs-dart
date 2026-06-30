@@ -127,6 +127,31 @@ class Bcs {
     );
   }
 
+  /// Fast `vector<u8>`: same wire bytes as `vector(u8())`, no per-element overhead.
+  static BcsType<Uint8List, dynamic> byteVector(
+      [BcsTypeOptions<Uint8List, dynamic>? options]) {
+    return BcsType<Uint8List, dynamic>(
+      name: options?.name ?? 'vector<u8>',
+      read: (reader) {
+        final length = reader.readULEB();
+        return reader.readBytes(length);
+      },
+      write: (value, writer) {
+        final array =
+            value is Uint8List ? value : Uint8List.fromList(List<int>.from(value));
+        writer.writeULEB(array.length);
+        writer.writeBytes(array);
+      },
+      serializedSize: (value, {BcsWriterOptions? options}) {
+        final length = (value as dynamic).length as int;
+        return ulebEncode(length).length + length;
+      },
+      validate: (value) {
+        options?.validate?.call(value);
+      },
+    );
+  }
+
   static BcsType<String, dynamic> string([BcsTypeOptions<String, String>? options]) {
     return stringLikeBcsType(
       name: 'string',
@@ -285,6 +310,9 @@ class Bcs {
       name: name,
       read: (reader) {
         final index = reader.readULEB();
+        if (index < 0 || index >= canonicalOrder.length) {
+          throw ArgumentError('Unknown value $index for enum $name');
+        }
         final entry = canonicalOrder[index];
         final value = entry.value?.read(reader) ?? true;
         return {
@@ -318,13 +346,30 @@ class Bcs {
 
   static BcsType<Map<K, V>, Map<InputK, InputV>> map<K, V, InputK, InputV>(
       BcsType<K, InputK> keyType, BcsType<V, InputV> valueType) {
-    return Bcs.vector(Bcs.tuple([keyType, valueType])).transform(
+    return BcsType<Map<K, V>, Map<InputK, InputV>>(
       name: 'Map<${keyType.name}, ${valueType.name}>',
-      input: (Map<InputK, InputV> value) {
-        return value.entries.map((e) => [e.key, e.value]).toList();
+      read: (reader) {
+        final length = reader.readULEB();
+        final result = <K, V>{};
+        for (var i = 0; i < length; i++) {
+          final k = keyType.read(reader);
+          final v = valueType.read(reader);
+          result[k] = v;
+        }
+        return result;
       },
-      output: (List<List> value) {
-        return Map.fromEntries(value.map((e) => MapEntry(e[0] as K, e[1] as V)));
+      write: (value, writer) {
+        // Sort entries by serialized key bytes for canonical map order.
+        final entries = value.entries
+            .map((e) => [keyType.serialize(e.key).toBytes(), e.value])
+            .toList();
+        entries.sort(
+            (a, b) => compareBcsBytes(a[0] as Uint8List, b[0] as Uint8List));
+        writer.writeULEB(entries.length);
+        for (final entry in entries) {
+          writer.writeBytes(entry[0] as Uint8List);
+          valueType.write(entry[1] as InputV, writer);
+        }
       },
     );
   }
@@ -332,4 +377,15 @@ class Bcs {
   static BcsType<T, Input> lazy<T, Input>(BcsType<T, Input> Function() cb) {
     return lazyBcsType(cb);
   }
+}
+
+/// Lexicographic byte compare (byte-by-byte, then length) for BTreeMap key order.
+int compareBcsBytes(Uint8List a, Uint8List b) {
+  final minLength = a.length < b.length ? a.length : b.length;
+  for (var i = 0; i < minLength; i++) {
+    if (a[i] != b[i]) {
+      return a[i] - b[i];
+    }
+  }
+  return a.length - b.length;
 }

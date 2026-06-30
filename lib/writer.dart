@@ -5,10 +5,7 @@ import 'package:bcs_dart/consts.dart';
 import 'package:bcs_dart/uleb.dart';
 import 'package:bcs_dart/utils.dart';
 
-/// Class used to write BCS data into a buffer. Initializer requires
-/// some size of a buffer to init; default value for this buffer is 1KB.
-///
-/// Most methods are chainable, so it is possible to write them in one go.
+/// Writes BCS data into a buffer (default 1KB). Most methods are chainable.
 ///
 /// ```dart
 /// final serialized = BcsWriter()
@@ -35,7 +32,8 @@ class BcsWriter {
   ensureSizeOrGrow(int bytes) {
     final requiredSize = _bytePosition + bytes;
     if (requiredSize > _size) {
-      final nextSize = min(_maxSize, _size + _allocateSize);
+      final nextSize =
+          min(_maxSize, max(_size + requiredSize, _size + _allocateSize));
       if (requiredSize > nextSize) {
         throw ArgumentError(
             "Attempting to serialize to BCS, but buffer does not have enough size. Allocated size: $_size, Max size: $_maxSize, Required size: $requiredSize");
@@ -61,6 +59,15 @@ class BcsWriter {
     return shift(1);
   }
 
+  /// Write a raw byte array into the buffer and shift the cursor by its length.
+  BcsWriter writeBytes(Uint8List bytes) {
+    ensureSizeOrGrow(bytes.length);
+    for (var i = 0; i < bytes.length; i++) {
+      _dataView.setUint8(_bytePosition + i, bytes[i]);
+    }
+    return shift(bytes.length);
+  }
+
   /// Write a U16 value into a buffer and shift cursor position by 2.
   BcsWriter write16(int value) {
     ensureSizeOrGrow(2);
@@ -80,7 +87,7 @@ class BcsWriter {
     final low = value & BigInt.from(MAX_U32_NUMBER);
     final high = value >> 32;
 
-    // write little endian number
+    // little endian
     write32(low.toInt());
     write32(high.toInt());
 
@@ -92,7 +99,7 @@ class BcsWriter {
     final low = value & MAX_U64_BIG_INT;
     final high = value >> 64;
 
-    // write little endian number
+    // little endian
     write64(low);
     write64(high);
 
@@ -104,15 +111,14 @@ class BcsWriter {
     final low = value & MAX_U128_BIG_INT;
     final high = value >> 128;
 
-    // write little endian number
+    // little endian
     write128(low);
     write128(high);
 
     return this;
   }
 
-  /// Write a ULEB value into a buffer and shift cursor position by number of bytes
-  /// written.
+  /// Write a ULEB value and shift cursor by the number of bytes written.
   BcsWriter writeULEB(int value) {
     final data = ulebEncode(value);
     for (var item in data) {
@@ -121,8 +127,7 @@ class BcsWriter {
     return this;
   }
 
-  /// Write a vector into a buffer by first writing the vector length and then calling
-  /// a callback on each passed value.
+  /// Write a vector: ULEB length, then the callback on each element.
   BcsWriter writeVec(
       dynamic vector, dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb) {
     writeULEB(vector.length);
@@ -137,7 +142,7 @@ class BcsWriter {
     return this;
   }
 
-  /// Get underlying buffer taking only value bytes (in case initial buffer size was bigger).
+  /// Underlying buffer trimmed to the bytes actually written.
   Uint8List toBytes() {
     return Uint8List.sublistView(_dataView, 0, _bytePosition);
   }

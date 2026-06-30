@@ -170,13 +170,13 @@ final parsedMap = Bcs.map(Bcs.u8(), Bcs.string()).parse(map);
 
 ## Generics
 
-To define a generic struct or an enum, you can define a generic typescript function helper
+To define a generic struct or an enum, you can define a generic Dart function helper
 
 ```dart
 import 'package:bcs_dart/bcs.dart';
 import 'package:bcs_dart/bcs_type.dart';
 
-// The T typescript generic is a placeholder for the typescript type of the generic value
+// The T generic is a placeholder for the Dart type of the generic value
 // The T argument will be the bcs type passed in when creating a concrete instance of the Container type
 BcsType Container<T>(BcsType<T, T> T) {
 	return Bcs.struct('Container<T>', {

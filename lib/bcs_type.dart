@@ -27,9 +27,9 @@ class BcsType<T, Input> {
     Uint8List Function(Input, {BcsWriterOptions? options})? serialize,
     int? Function(Input, {BcsWriterOptions? options})? serializedSize,
     void Function(Input)? validate,
-  })  : this.serializedSize = serializedSize ?? ((_, {BcsWriterOptions? options}) => null),
-        this._write = write,
-        this._serialize = serialize ??
+  })  : serializedSize = serializedSize ?? ((_, {BcsWriterOptions? options}) => null),
+        _write = write,
+        _serialize = serialize ??
             ((value, {options}) {
               final writer = BcsWriter(
                   size: options?.size ?? serializedSize?.call(value) ?? 1024,
@@ -38,7 +38,7 @@ class BcsType<T, Input> {
               write(value, writer);
               return writer.toBytes();
             }),
-        this.validate = validate ?? ((_) {});
+        validate = validate ?? ((_) {});
 
   void write(Input value, BcsWriter writer) {
     validate(value);
@@ -69,29 +69,35 @@ class BcsType<T, Input> {
 
   BcsType<T2, Input2> transform<T2, Input2>({
     String? name,
-    required Input Function(Input2) input,
-    required T2 Function(T) output,
+    Input Function(Input2)? input,
+    T2 Function(T)? output,
     void Function(Input2)? validate,
   }) {
+    Input toInput(Input2 value) => input != null ? input(value) : value as Input;
     return BcsType<T2, Input2>(
       name: name ?? this.name,
-      read: (reader) => output(this.read(reader)),
-      write: (value, writer) => this._write(input(value), writer),
-      serializedSize: (value, {BcsWriterOptions? options}) => this.serializedSize(input(value)),
-      serialize: (value, {options}) => this._serialize(input(value), options: options),
+      read: (reader) {
+        final value = read(reader);
+        return output != null ? output(value) : value as T2;
+      },
+      write: (value, writer) => _write(toInput(value), writer),
+      serializedSize: (value, {BcsWriterOptions? options}) =>
+          serializedSize(toInput(value)),
+      serialize: (value, {options}) => _serialize(toInput(value), options: options),
       validate: (value) {
         validate?.call(value);
-        this.validate(input(value));
+        this.validate(toInput(value));
       },
     );
   }
 }
 
+/// Whether [obj] is a [SerializedBcs].
+bool isSerializedBcs(Object? obj) => obj is SerializedBcs;
+
 class SerializedBcs<T, Input> {
   final BcsType<T, Input> _schema;
   final Uint8List _bytes;
-
-  static const String SERIALIZED_BCS_BRAND = 'SERIALIZED_BCS_BRAND';
 
   bool get isSerializedBcs => true;
 
