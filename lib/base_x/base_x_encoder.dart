@@ -1,4 +1,4 @@
-part of basex;
+part of '../base_x.dart';
 
 class BaseXEncoder extends Converter<Uint8List, String> {
   const BaseXEncoder(this.alphabet);

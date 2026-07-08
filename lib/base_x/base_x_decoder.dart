@@ -1,4 +1,4 @@
-part of basex;
+part of '../base_x.dart';
 
 class BaseXDecoder extends Converter<String, Uint8List> {
   final String alphabet;

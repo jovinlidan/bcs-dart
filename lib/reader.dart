@@ -112,7 +112,8 @@ class BcsReader {
   /// where X is the length of the vector, defined as ULEB in BCS bytes.
   ///
   /// Array of the resulting values, returned by callback.
-  List<dynamic> readVec(dynamic Function(BcsReader reader, int i, int length) cb) {
+  List<dynamic> readVec(
+      dynamic Function(BcsReader reader, int i, int length) cb) {
     int length = readULEB();
     final result = <dynamic>[];
     for (int i = 0; i < length; i++) {
@@ -121,7 +122,8 @@ class BcsReader {
     return result;
   }
 
-  List<dynamic> readFixedArray(int size, dynamic Function(BcsReader reader, int i, int length) cb) {
+  List<dynamic> readFixedArray(
+      int size, dynamic Function(BcsReader reader, int i, int length) cb) {
     int length = size;
     final result = <dynamic>[];
     for (int i = 0; i < length; i++) {

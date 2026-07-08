@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 import 'dart:typed_data';
 
 import 'package:bcs_dart/index.dart';
@@ -20,7 +21,8 @@ void main() {
     });
 
     test('should deserialize hex with leading 0s', () {
-      const addressLeading0 = 'a7429d7a356dd98f688f11a330a32e0a3cc1908734a8c5a5af98f34ec93df0c';
+      const addressLeading0 =
+          'a7429d7a356dd98f688f11a330a32e0a3cc1908734a8c5a5af98f34ec93df0c';
       expect(toHEX(Uint8List.fromList([0, 1])), '0001');
       expect(fromHEX('0x1'), Uint8List.fromList([1]));
       expect(fromHEX('1'), Uint8List.fromList([1]));

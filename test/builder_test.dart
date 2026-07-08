@@ -1,3 +1,5 @@
+// Struct vars are named after the type they hold (MyStruct, Wrapper).
+// ignore_for_file: non_constant_identifier_names
 import 'dart:typed_data';
 
 import 'package:bcs_dart/index.dart';
@@ -8,7 +10,8 @@ import 'package:bcs_dart/writer.dart';
 import 'package:test/test.dart';
 
 void main() {
-  void testType<T, Input>(String name, BcsType<T, Input> schema, Input value, String hex,
+  void testType<T, Input>(
+      String name, BcsType<T, Input> schema, Input value, String hex,
       [T? expected]) {
     expected ??= value as T;
 
@@ -66,24 +69,29 @@ void main() {
       testType('u32 16777215', Bcs.u32(), 16777215, 'ffffff00');
       testType('u32 16777216', Bcs.u32(), 16777216, '00000001');
       testType('u32 4294967295', Bcs.u32(), 4294967295, 'ffffffff');
-      testType('u64 0', Bcs.u64(), BigInt.zero, '0000000000000000', BigInt.zero);
+      testType(
+          'u64 0', Bcs.u64(), BigInt.zero, '0000000000000000', BigInt.zero);
       testType('u64 1', Bcs.u64(), BigInt.one, '0100000000000000', BigInt.one);
-      testType('u64 255', Bcs.u64(), BigInt.from(255), 'ff00000000000000', BigInt.from(255));
-      testType('u64 256', Bcs.u64(), BigInt.from(256), '0001000000000000', BigInt.from(256));
-      testType('u64 65535', Bcs.u64(), BigInt.from(65535), 'ffff000000000000', BigInt.from(65535));
-      testType('u64 65536', Bcs.u64(), BigInt.from(65536), '0000010000000000', BigInt.from(65536));
-      testType('u64 16777215', Bcs.u64(), BigInt.from(16777215), 'ffffff0000000000',
-          BigInt.from(16777215));
-      testType('u64 16777216', Bcs.u64(), BigInt.from(16777216), '0000000100000000',
-          BigInt.from(16777216));
-      testType('u64 4294967295', Bcs.u64(), BigInt.from(4294967295), 'ffffffff00000000',
-          BigInt.from(4294967295));
-      testType('u64 4294967296', Bcs.u64(), BigInt.from(4294967296), '0000000001000000',
-          BigInt.from(4294967296));
-      testType('u64 1099511627775', Bcs.u64(), BigInt.parse('1099511627775'), 'ffffffffff000000',
-          BigInt.parse('1099511627775'));
-      testType('u64 1099511627776', Bcs.u64(), BigInt.parse('1099511627776'), '0000000000010000',
-          BigInt.parse('1099511627776'));
+      testType('u64 255', Bcs.u64(), BigInt.from(255), 'ff00000000000000',
+          BigInt.from(255));
+      testType('u64 256', Bcs.u64(), BigInt.from(256), '0001000000000000',
+          BigInt.from(256));
+      testType('u64 65535', Bcs.u64(), BigInt.from(65535), 'ffff000000000000',
+          BigInt.from(65535));
+      testType('u64 65536', Bcs.u64(), BigInt.from(65536), '0000010000000000',
+          BigInt.from(65536));
+      testType('u64 16777215', Bcs.u64(), BigInt.from(16777215),
+          'ffffff0000000000', BigInt.from(16777215));
+      testType('u64 16777216', Bcs.u64(), BigInt.from(16777216),
+          '0000000100000000', BigInt.from(16777216));
+      testType('u64 4294967295', Bcs.u64(), BigInt.from(4294967295),
+          'ffffffff00000000', BigInt.from(4294967295));
+      testType('u64 4294967296', Bcs.u64(), BigInt.from(4294967296),
+          '0000000001000000', BigInt.from(4294967296));
+      testType('u64 1099511627775', Bcs.u64(), BigInt.parse('1099511627775'),
+          'ffffffffff000000', BigInt.parse('1099511627775'));
+      testType('u64 1099511627776', Bcs.u64(), BigInt.parse('1099511627776'),
+          '0000000000010000', BigInt.parse('1099511627776'));
       testType(
         'u64 281474976710655',
         Bcs.u64(),
@@ -119,12 +127,12 @@ void main() {
         'ffffffffffffffff',
         BigInt.parse('18446744073709551615'),
       );
-      testType('u128 0', Bcs.u128(), BigInt.parse('0'), '00000000000000000000000000000000',
-          BigInt.parse('0'));
-      testType('u128 1', Bcs.u128(), BigInt.parse('1'), '01000000000000000000000000000000',
-          BigInt.parse('1'));
-      testType('u128 255', Bcs.u128(), BigInt.parse('255'), 'ff000000000000000000000000000000',
-          BigInt.parse('255'));
+      testType('u128 0', Bcs.u128(), BigInt.parse('0'),
+          '00000000000000000000000000000000', BigInt.parse('0'));
+      testType('u128 1', Bcs.u128(), BigInt.parse('1'),
+          '01000000000000000000000000000000', BigInt.parse('1'));
+      testType('u128 255', Bcs.u128(), BigInt.parse('255'),
+          'ff000000000000000000000000000000', BigInt.parse('255'));
       testType(
         'u128 18446744073709551615',
         Bcs.u128(),
@@ -150,24 +158,28 @@ void main() {
 
     group('vector', () {
       testType('vector([])', Bcs.vector(Bcs.u8()), <int>[], '00');
-      testType('vector([1, 2, 3])', Bcs.vector(Bcs.u8()), [1, 2, 3], '03010203');
+      testType(
+          'vector([1, 2, 3])', Bcs.vector(Bcs.u8()), [1, 2, 3], '03010203');
       testType(
         'vector([1, null, 3])',
         Bcs.vector(Bcs.option(Bcs.u8())),
         [1, null, 3],
-        '03' + '0101' + '00' + '0103',
+        '03' '0101' '00' '0103',
       );
     });
 
     group('fixedVector', () {
       testType('fixedVector([])', Bcs.fixedArray(0, Bcs.u8()), <int>[], '');
-      testType('vector([1, 2, 3])', Bcs.fixedArray(3, Bcs.u8()), [1, 2, 3], '010203');
+      testType('vector([1, 2, 3])', Bcs.fixedArray(3, Bcs.u8()), [1, 2, 3],
+          '010203');
       testType(
         'fixedVector([1, null, 3])',
         Bcs.fixedArray(3, Bcs.option(Bcs.u8())),
         [1, null, 3],
         // eslint-disable-next-line no-useless-concat
-        '0101' + '00' + '0103',
+        '0101'
+            '00'
+            '0103',
       );
     });
 
@@ -175,12 +187,13 @@ void main() {
       testType('optional u8 undefined', Bcs.option(Bcs.u8()), null, '00', null);
       testType('optional u8 null', Bcs.option(Bcs.u8()), null, '00');
       testType('optional u8 0', Bcs.option(Bcs.u8()), 0, '0100');
-      testType('optional vector(null)', Bcs.option(Bcs.vector(Bcs.u8())), null, '00');
+      testType('optional vector(null)', Bcs.option(Bcs.vector(Bcs.u8())), null,
+          '00');
       testType(
         'optional vector([1, 2, 3])',
         Bcs.option(Bcs.vector(Bcs.option(Bcs.u8()))),
         [1, null, 3],
-        '01' + '03' + '0101' + '00' + '0103',
+        '01' '03' '0101' '00' '0103',
       );
     });
 
@@ -196,11 +209,13 @@ void main() {
     });
 
     group('bytes', () {
-      testType('bytes', Bcs.bytes(4), Uint8List.fromList([1, 2, 3, 4]), '01020304');
+      testType(
+          'bytes', Bcs.bytes(4), Uint8List.fromList([1, 2, 3, 4]), '01020304');
     });
 
     group('tuples', () {
-      testType('tuple(u8, u8)', Bcs.tuple([Bcs.u8(), Bcs.u8()]), <dynamic>[1, 2], '0102');
+      testType('tuple(u8, u8)', Bcs.tuple([Bcs.u8(), Bcs.u8()]),
+          <dynamic>[1, 2], '0102');
       testType(
         'tuple(u8, string, boolean)',
         Bcs.tuple([Bcs.u8(), Bcs.string(), Bcs.boolean()]),
@@ -274,10 +289,10 @@ void main() {
         "Variant2": Bcs.string(),
       });
 
-      testType(
-          'Enum::Variant0(1)', E, {"Variant0": 1}, '000100', {"\$kind": 'Variant0', "Variant0": 1});
-      testType(
-          'Enum::Variant1(1)', E, {"Variant1": 1}, '0101', {"\$kind": 'Variant1', "Variant1": 1});
+      testType('Enum::Variant0(1)', E, {"Variant0": 1}, '000100',
+          {"\$kind": 'Variant0', "Variant0": 1});
+      testType('Enum::Variant1(1)', E, {"Variant1": 1}, '0101',
+          {"\$kind": 'Variant1', "Variant1": 1});
       testType(
           'Enum::Variant2("hello")',
           E,

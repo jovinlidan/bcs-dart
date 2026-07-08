@@ -23,8 +23,6 @@ String encodeStr(Uint8List data, Encoding encoding) {
       return toB64(data);
     case Encoding.hex:
       return toHEX(data);
-    default:
-      throw ArgumentError("Unsupported encoding, supported values are: base64, hex");
   }
 }
 
@@ -36,7 +34,5 @@ Uint8List decodeStr(String data, Encoding encoding) {
       return fromB64(data);
     case Encoding.hex:
       return fromHEX(data);
-    default:
-      throw ArgumentError("Unsupported encoding, supported values are: base64, hex");
   }
 }

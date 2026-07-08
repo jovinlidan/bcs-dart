@@ -51,7 +51,8 @@ class Bcs {
     );
   }
 
-  static BcsType<BigInt, dynamic> u64([BcsTypeOptions<String, dynamic>? options]) {
+  static BcsType<BigInt, dynamic> u64(
+      [BcsTypeOptions<String, dynamic>? options]) {
     return bigUIntBcsType(
       name: 'u64',
       readMethod: 'read64',
@@ -62,7 +63,8 @@ class Bcs {
     );
   }
 
-  static BcsType<BigInt, dynamic> u128([BcsTypeOptions<String, dynamic>? options]) {
+  static BcsType<BigInt, dynamic> u128(
+      [BcsTypeOptions<String, dynamic>? options]) {
     return bigUIntBcsType(
       name: 'u128',
       readMethod: 'read128',
@@ -73,7 +75,8 @@ class Bcs {
     );
   }
 
-  static BcsType<BigInt, dynamic> u256([BcsTypeOptions<String, dynamic>? options]) {
+  static BcsType<BigInt, dynamic> u256(
+      [BcsTypeOptions<String, dynamic>? options]) {
     return bigUIntBcsType(
       name: 'u256',
       readMethod: 'read256',
@@ -121,7 +124,8 @@ class Bcs {
       validate: (value) {
         options?.validate?.call(value);
         if (value.length != size) {
-          throw ArgumentError('Expected Iterable of length $size, found ${value.length}');
+          throw ArgumentError(
+              'Expected Iterable of length $size, found ${value.length}');
         }
       },
     );
@@ -137,8 +141,9 @@ class Bcs {
         return reader.readBytes(length);
       },
       write: (value, writer) {
-        final array =
-            value is Uint8List ? value : Uint8List.fromList(List<int>.from(value));
+        final array = value is Uint8List
+            ? value
+            : Uint8List.fromList(List<int>.from(value));
         writer.writeULEB(array.length);
         writer.writeBytes(array);
       },
@@ -152,7 +157,8 @@ class Bcs {
     );
   }
 
-  static BcsType<String, dynamic> string([BcsTypeOptions<String, String>? options]) {
+  static BcsType<String, dynamic> string(
+      [BcsTypeOptions<String, String>? options]) {
     return stringLikeBcsType(
       name: 'string',
       toBytes: (value) => Uint8List.fromList(utf8.encode(value)),
@@ -161,7 +167,8 @@ class Bcs {
     );
   }
 
-  static BcsType<List<T>, Iterable<Input>> fixedArray<T, Input>(int size, BcsType<T, Input> type,
+  static BcsType<List<T>, Iterable<Input>> fixedArray<T, Input>(
+      int size, BcsType<T, Input> type,
       [BcsTypeOptions<List<T>, Iterable<Input>>? options]) {
     return BcsType<List<T>, Iterable<Input>>(
       name: '${type.name}[$size]',
@@ -180,7 +187,8 @@ class Bcs {
       validate: (value) {
         options?.validate?.call(value);
         if (value.length != size) {
-          throw ArgumentError('Expected Iterable of length $size, found ${value.length}');
+          throw ArgumentError(
+              'Expected Iterable of length $size, found ${value.length}');
         }
       },
     );
@@ -230,7 +238,8 @@ class Bcs {
     );
   }
 
-  static BcsType<List, List> tuple(List<BcsType> types, [BcsTypeOptions<List, List>? options]) {
+  static BcsType<List, List> tuple(List<BcsType> types,
+      [BcsTypeOptions<List, List>? options]) {
     return BcsType<List, List>(
       name: '(${types.map((t) => t.name).join(', ')})',
       serializedSize: (values, {BcsWriterOptions? options}) {
@@ -259,13 +268,15 @@ class Bcs {
       validate: (value) {
         options?.validate?.call(value);
         if (value.length != types.length) {
-          throw ArgumentError('Expected List of length ${types.length}, found ${value.length}');
+          throw ArgumentError(
+              'Expected List of length ${types.length}, found ${value.length}');
         }
       },
     );
   }
 
-  static BcsType<Map<String, dynamic>, dynamic> struct(String name, Map<String, BcsType> fields,
+  static BcsType<Map<String, dynamic>, dynamic> struct(
+      String name, Map<String, BcsType> fields,
       [BcsTypeOptions<Map<String, dynamic>, Map<String, dynamic>>? options]) {
     final canonicalOrder = fields.entries.toList();
 
@@ -332,7 +343,9 @@ class Bcs {
       validate: (val) {
         options?.validate?.call(val);
         final value = val is Map ? val : val.toJson();
-        final keys = value.keys.where((k) => k != '\$kind' && values.containsKey(k)).toList();
+        final keys = value.keys
+            .where((k) => k != '\$kind' && values.containsKey(k))
+            .toList();
         if (keys.length != 1) {
           throw ArgumentError(
               'Expected object with one key, but found ${keys.length} for type $name');

@@ -25,11 +25,11 @@ void main() {
         "meta": {"lastLogin": '23 Feb', "isActive": false}
       };
 
-      bcs.registerStructType(
-          "Metadata", {"lastLogin": LegacyBCS.STRING, "isActive": LegacyBCS.BOOL});
+      bcs.registerStructType("Metadata",
+          {"lastLogin": LegacyBCS.STRING, "isActive": LegacyBCS.BOOL});
 
-      bcs.registerStructType(
-          ["User", "T"], {"name": LegacyBCS.STRING, "role": LegacyBCS.STRING, "meta": "T"});
+      bcs.registerStructType(["User", "T"],
+          {"name": LegacyBCS.STRING, "role": LegacyBCS.STRING, "meta": "T"});
 
       expect(serde(bcs, ["User", "Metadata"], value), value);
     });
@@ -70,7 +70,8 @@ void main() {
 
       bcs.registerStructType(["Entry", "K", "V"], {"key": "K", "value": "V"});
 
-      bcs.registerStructType(["Wrapper", "A", "B"], {"content_one": "A", "content_two": "B"});
+      bcs.registerStructType(
+          ["Wrapper", "A", "B"], {"content_one": "A", "content_two": "B"});
 
       bcs.registerStructType([
         "VecMap",
@@ -106,7 +107,8 @@ void main() {
 
       bcs.registerStructType(["Entry", "K", "V"], {"key": "K", "value": "V"});
 
-      bcs.registerStructType(["Wrapper", "A", "B"], {"content_one": "A", "content_two": "B"});
+      bcs.registerStructType(
+          ["Wrapper", "A", "B"], {"content_one": "A", "content_two": "B"});
 
       bcs.registerStructType([
         "VecMap",

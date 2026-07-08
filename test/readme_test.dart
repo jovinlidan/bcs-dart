@@ -1,3 +1,6 @@
+// README-mirror demos; serialized results are intentionally unused.
+// ignore_for_file: unused_local_variable
+
 import 'package:bcs_dart/legacy_bcs.dart';
 import 'package:bcs_dart/utils.dart';
 import 'package:test/test.dart';
@@ -20,7 +23,8 @@ void main() {
 
       // deserialization: BCS bytes into Coin
       final bytes = bcs.ser("Coin", {
-        "id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "id":
+            "0000000000000000000000000000000000000000000000000000000000000001",
         "value": BigInt.from(1000000),
       }).toBytes();
 
@@ -80,23 +84,26 @@ void main() {
       final bcs = LegacyBCS(getSuiMoveConfig());
 
       // Integers
-      final _u8 = bcs.ser(LegacyBCS.U8, 100).toBytes();
-      final _u64 = bcs.ser(LegacyBCS.U64, BigInt.from(1000000)).hex();
-      final _u128 = bcs.ser(LegacyBCS.U128, "100000010000001000000").base64();
+      final u8 = bcs.ser(LegacyBCS.U8, 100).toBytes();
+      final u64 = bcs.ser(LegacyBCS.U64, BigInt.from(1000000)).hex();
+      final u128 = bcs.ser(LegacyBCS.U128, "100000010000001000000").base64();
 
       // Other types
-      final _bool = bcs.ser(LegacyBCS.BOOL, true).hex();
-      final _addr =
-          bcs.ser(LegacyBCS.ADDRESS, "0000000000000000000000000000000000000001").toBytes();
-      final _str = bcs.ser(LegacyBCS.STRING, "this is an ascii string").toBytes();
+      final bool = bcs.ser(LegacyBCS.BOOL, true).hex();
+      final addr = bcs
+          .ser(LegacyBCS.ADDRESS, "0000000000000000000000000000000000000001")
+          .toBytes();
+      final str =
+          bcs.ser(LegacyBCS.STRING, "this is an ascii string").toBytes();
 
       // Vectors (vector<T>)
-      final _u8_vec = bcs.ser("vector<u8>", [1, 2, 3, 4, 5, 6, 7]).toBytes();
-      final _bool_vec = bcs.ser("vector<bool>", [true, true, false]).toBytes();
-      final _str_vec = bcs.ser("vector<bool>", ["string1", "string2", "string3"]).toBytes();
+      final u8Vec = bcs.ser("vector<u8>", [1, 2, 3, 4, 5, 6, 7]).toBytes();
+      final boolVec = bcs.ser("vector<bool>", [true, true, false]).toBytes();
+      final strVec =
+          bcs.ser("vector<bool>", ["string1", "string2", "string3"]).toBytes();
 
       // Even vector of vector (...of vector) is an option
-      final _matrix = bcs.ser("vector<vector<u8>>", [
+      final matrix = bcs.ser("vector<vector<u8>>", [
         [0, 0, 0],
         [1, 1, 1],
         [2, 2, 2],
@@ -136,12 +143,12 @@ void main() {
       bcs.registerAlias("ObjectDigest", LegacyBCS.BASE58);
 
       // ObjectDigest is now treated as base58 string
-      final _b58 = bcs.ser("ObjectDigest", "Ldp").toBytes();
+      final b58 = bcs.ser("ObjectDigest", "Ldp").toBytes();
 
       // we can override already existing defintestion
       bcs.registerAlias("ObjectDigest", LegacyBCS.HEX);
 
-      final _hex = bcs.ser("ObjectDigest", "C0FFEE").toBytes();
+      final hex0 = bcs.ser("ObjectDigest", "C0FFEE").toBytes();
     });
 
     test("Example: Struct", () {
@@ -160,8 +167,9 @@ void main() {
 
       // value passed into ser function has to have the same
       // structure as the defintestion
-      final _bytes = bcs.ser("Coin", {
-        "id": "0x0000000000000000000000000000000000000000000000000000000000000005",
+      final bytes0 = bcs.ser("Coin", {
+        "id":
+            "0x0000000000000000000000000000000000000000000000000000000000000005",
         "balance": {
           "value": BigInt.from(100000000),
         },
@@ -234,19 +242,19 @@ void main() {
       });
 
       // any truthy value marks empty in struct value
-      final _optionNone = bcs.ser("Option<TransactionType>", {
+      final optionNone = bcs.ser("Option<TransactionType>", {
         "none": true,
       });
 
       // some now contains a value of type TransactionType
-      final _optionTx = bcs.ser("Option<TransactionType>", {
+      final optionTx = bcs.ser("Option<TransactionType>", {
         "some": {
           "single": [1, 2, 3, 4, 5, 6],
         },
       });
 
       // same type signature but a different enum invariant - batch
-      final _optionTxBatch = bcs.ser("Option<TransactionType>", {
+      final optionTxBatch = bcs.ser("Option<TransactionType>", {
         "some": {
           "batch": [
             [1, 2, 3, 4, 5, 6],
@@ -261,18 +269,21 @@ void main() {
 
       // Some value we want to serialize
       final coin = {
-        "id": "0000000000000000000000000000000000000000000000000000000000000005",
+        "id":
+            "0000000000000000000000000000000000000000000000000000000000000005",
         "value": BigInt.from(1111333333222),
       };
 
       // Instead of defining a type we pass struct schema as the first argument
-      final coin_bytes = bcs.ser({"id": LegacyBCS.ADDRESS, "value": LegacyBCS.U64}, coin).toBytes();
+      final coinBytes = bcs.ser(
+          {"id": LegacyBCS.ADDRESS, "value": LegacyBCS.U64}, coin).toBytes();
 
       // Same wtesth deserialization
-      final coin_restored = bcs.de({"id": LegacyBCS.ADDRESS, "value": LegacyBCS.U64}, coin_bytes);
+      final coinRestored =
+          bcs.de({"id": LegacyBCS.ADDRESS, "value": LegacyBCS.U64}, coinBytes);
 
-      expect(coin["id"], coin_restored["id"]);
-      expect(coin["value"], BigInt.parse(coin_restored["value"]));
+      expect(coin["id"], coinRestored["id"]);
+      expect(coin["value"], BigInt.parse(coinRestored["value"]));
     });
   });
 }

@@ -29,7 +29,7 @@ class BcsWriter {
     _dataView = ByteData.sublistView(Uint8List(size));
   }
 
-  ensureSizeOrGrow(int bytes) {
+  void ensureSizeOrGrow(int bytes) {
     final requiredSize = _bytePosition + bytes;
     if (requiredSize > _size) {
       final nextSize =
@@ -128,17 +128,22 @@ class BcsWriter {
   }
 
   /// Write a vector: ULEB length, then the callback on each element.
-  BcsWriter writeVec(
-      dynamic vector, dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb) {
+  BcsWriter writeVec(dynamic vector,
+      dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb) {
     writeULEB(vector.length);
-    List.from(vector).asMap().forEach((i, el) => cb(this, el, i, vector.length));
+    List.from(vector)
+        .asMap()
+        .forEach((i, el) => cb(this, el, i, vector.length));
     return this;
   }
 
   BcsWriter writeFixedArray(dynamic vector, int? size,
       dynamic Function(BcsWriter writer, dynamic el, int i, int len) cb) {
     final lst = List.from(vector);
-    lst.sublist(0, size ?? lst.length).asMap().forEach((i, el) => cb(this, el, i, vector.length));
+    lst
+        .sublist(0, size ?? lst.length)
+        .asMap()
+        .forEach((i, el) => cb(this, el, i, vector.length));
     return this;
   }
 

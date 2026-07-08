@@ -27,7 +27,8 @@ class BcsType<T, Input> {
     Uint8List Function(Input, {BcsWriterOptions? options})? serialize,
     int? Function(Input, {BcsWriterOptions? options})? serializedSize,
     void Function(Input)? validate,
-  })  : serializedSize = serializedSize ?? ((_, {BcsWriterOptions? options}) => null),
+  })  : serializedSize =
+            serializedSize ?? ((_, {BcsWriterOptions? options}) => null),
         _write = write,
         _serialize = serialize ??
             ((value, {options}) {
@@ -73,7 +74,8 @@ class BcsType<T, Input> {
     T2 Function(T)? output,
     void Function(Input2)? validate,
   }) {
-    Input toInput(Input2 value) => input != null ? input(value) : value as Input;
+    Input toInput(Input2 value) =>
+        input != null ? input(value) : value as Input;
     return BcsType<T2, Input2>(
       name: name ?? this.name,
       read: (reader) {
@@ -83,7 +85,8 @@ class BcsType<T, Input> {
       write: (value, writer) => _write(toInput(value), writer),
       serializedSize: (value, {BcsWriterOptions? options}) =>
           serializedSize(toInput(value)),
-      serialize: (value, {options}) => _serialize(toInput(value), options: options),
+      serialize: (value, {options}) =>
+          _serialize(toInput(value), options: options),
       validate: (value) {
         validate?.call(value);
         this.validate(toInput(value));
@@ -181,7 +184,8 @@ BcsType<int, dynamic> uIntBcsType({
     validate: (val) {
       final value = int.parse(val.toString());
       if (value < 0 || value > maxValue) {
-        throw ArgumentError('Invalid $name value: $value. Expected value in range 0-$maxValue');
+        throw ArgumentError(
+            'Invalid $name value: $value. Expected value in range 0-$maxValue');
       }
       validate?.call(value);
     },
@@ -230,7 +234,8 @@ BcsType<BigInt, dynamic> bigUIntBcsType({
     validate: (val) {
       final value = BigInt.parse(val.toString());
       if (value < BigInt.zero || value > maxValue) {
-        throw ArgumentError('Invalid $name value: $value. Expected value in range 0-$maxValue');
+        throw ArgumentError(
+            'Invalid $name value: $value. Expected value in range 0-$maxValue');
       }
       validate?.call(value);
     },
@@ -306,8 +311,10 @@ BcsType<T, Input> lazyBcsType<T, Input>(BcsType<T, Input> Function() cb) {
   return BcsType<T, Input>(
     name: 'lazy',
     read: (data) => getType().read(data),
-    serializedSize: (value, {BcsWriterOptions? options}) => getType().serializedSize(value),
+    serializedSize: (value, {BcsWriterOptions? options}) =>
+        getType().serializedSize(value),
     write: (value, writer) => getType().write(value, writer),
-    serialize: (value, {options}) => getType().serialize(value, options: options).toBytes(),
+    serialize: (value, {options}) =>
+        getType().serialize(value, options: options).toBytes(),
   );
 }

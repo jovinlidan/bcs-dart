@@ -1,3 +1,5 @@
+// Struct vars are named after the type they hold (Coin, ...).
+// ignore_for_file: non_constant_identifier_names
 import 'package:test/test.dart';
 
 import 'package:bcs_dart/bcs.dart';
@@ -18,7 +20,8 @@ void main() {
         "is_locked": false,
       };
 
-      final setBytes = Coin.serialize(expected, options: BcsWriterOptions(size: 1, maxSize: 1024));
+      final setBytes = Coin.serialize(expected,
+          options: BcsWriterOptions(size: 1, maxSize: 1024));
 
       expect(Coin.parse(fromB64(rustBcs)), expected);
       expect(setBytes.toBase64(), rustBcs);
@@ -37,7 +40,9 @@ void main() {
         "is_locked": false,
       };
 
-      expect(() => Coin.serialize(expected, options: BcsWriterOptions(size: 1, maxSize: 1)),
+      expect(
+          () => Coin.serialize(expected,
+              options: BcsWriterOptions(size: 1, maxSize: 1)),
           throwsArgumentError);
     });
   });

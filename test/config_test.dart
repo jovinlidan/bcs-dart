@@ -23,14 +23,14 @@ void main() {
     });
 
     test("should fork config", () {
-      final bcs_v1 = LegacyBCS(getSuiMoveConfig());
-      bcs_v1.registerStructType("User", {"name": "string"});
+      final bcsV1 = LegacyBCS(getSuiMoveConfig());
+      bcsV1.registerStructType("User", {"name": "string"});
 
-      final bcs_v2 = LegacyBCS.fromBCS(bcs_v1);
-      bcs_v2.registerStructType("Worker", {"user": "User", "experience": "u64"});
+      final bcsV2 = LegacyBCS.fromBCS(bcsV1);
+      bcsV2.registerStructType("Worker", {"user": "User", "experience": "u64"});
 
-      expect(bcs_v1.hasType("Worker"), false);
-      expect(bcs_v2.hasType("Worker"), true);
+      expect(bcsV1.hasType("Worker"), false);
+      expect(bcsV2.hasType("Worker"), true);
     });
 
     test("should work wtesth custom config", () {

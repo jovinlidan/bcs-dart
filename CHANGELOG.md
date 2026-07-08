@@ -57,3 +57,14 @@ Synced to `f898c13`.
 - `BcsWriter.writeBytes(Uint8List)` bulk write.
 - Top-level `isSerializedBcs(Object?)` type guard; `bcs_type.dart` is now re-exported from the `bcs.dart` barrel.
 - `BcsType.transform` accepts one-directional transforms (`input`/`output` are now optional).
+
+# 0.2.1
+
+### Added
+
+- Example at `example/bcs_dart_example.dart`.
+
+### Changed
+
+- Expanded the package description and corrected the `repository` URL.
+- Formatting and static-analysis cleanup across the package (no API changes).

@@ -32,8 +32,8 @@ void main() {
       expect(serde(bcs, "bool", false), false);
 
       expect(
-          serde(
-              bcs, "address", "0x000000000000000000000000e3edac2c684ddbba5ad1a2b90fb361100b2094af"),
+          serde(bcs, "address",
+              "0x000000000000000000000000e3edac2c684ddbba5ad1a2b90fb361100b2094af"),
           "000000000000000000000000e3edac2c684ddbba5ad1a2b90fb361100b2094af");
     });
 
@@ -44,12 +44,14 @@ void main() {
       bcs.registerStructType("Beep", {"id": "address", "value": "u64"});
 
       final bytes = bcs.ser("Beep", {
-        "id": "0x00000000000000000000000045aacd9ed90a5a8e211502ac3fa898a3819f23b2",
+        "id":
+            "0x00000000000000000000000045aacd9ed90a5a8e211502ac3fa898a3819f23b2",
         "value": 10000000,
       }).toBytes();
       final struct = bcs.de("Beep", bytes);
 
-      expect(struct["id"], "00000000000000000000000045aacd9ed90a5a8e211502ac3fa898a3819f23b2");
+      expect(struct["id"],
+          "00000000000000000000000045aacd9ed90a5a8e211502ac3fa898a3819f23b2");
       expect(struct["value"], "10000000");
     });
 
@@ -61,11 +63,16 @@ void main() {
         "no_value": null,
       });
 
-      const addr = "bb967ddbebfee8c40d8fdd2c24cb02452834cd3a7061d18564448f900eb9e66d";
+      const addr =
+          "bb967ddbebfee8c40d8fdd2c24cb02452834cd3a7061d18564448f900eb9e66d";
 
-      expect(addr, bcs.de("Enum", bcs.ser("Enum", {"with_value": addr}).toBytes())["with_value"]);
+      expect(
+          addr,
+          bcs.de("Enum",
+              bcs.ser("Enum", {"with_value": addr}).toBytes())["with_value"]);
 
-      Map<String, dynamic> tmp = bcs.de("Enum", bcs.ser("Enum", {"no_value": null}).toBytes());
+      Map<String, dynamic> tmp =
+          bcs.de("Enum", bcs.ser("Enum", {"no_value": null}).toBytes());
       expect(tmp.containsKey("no_value"), true);
     });
 
@@ -79,12 +86,14 @@ void main() {
 
       {
         const value = ["100000", "555555555", "1123123", "0", "1214124124214"];
-        expect(serde(bcs, "vector<u64>", value).map((e) => e.toString()), value);
+        expect(
+            serde(bcs, "vector<u64>", value).map((e) => e.toString()), value);
       }
 
       {
         const value = ["100000", "555555555", "1123123", "0", "1214124124214"];
-        expect(serde(bcs, "vector<u128>", value).map((e) => e.toString()), value);
+        expect(
+            serde(bcs, "vector<u128>", value).map((e) => e.toString()), value);
       }
 
       {
@@ -136,7 +145,8 @@ void main() {
 
       {
         Map<String, dynamic> value = {
-          "owner": "0000000000000000000000000000000000000000000000000000000000000001",
+          "owner":
+              "0000000000000000000000000000000000000000000000000000000000000001",
           "is_active": true,
           "testem": {
             "balance": {"value": "10000"}
@@ -148,7 +158,8 @@ void main() {
 
         expect(result["owner"], value["owner"]);
         expect(result["is_active"], value["is_active"]);
-        expect(result["testem"]["balance"]["value"], value["testem"]["balance"]["value"]);
+        expect(result["testem"]["balance"]["value"],
+            value["testem"]["balance"]["value"]);
       }
     });
 
@@ -163,7 +174,8 @@ void main() {
       bcs.registerAlias("ObjectDigest", LegacyBCS.STRING);
 
       const value = {
-        "objectId": "5443700000000000000000000000000000000000000000000000000000000000",
+        "objectId":
+            "5443700000000000000000000000000000000000000000000000000000000000",
         "version": "9180",
         "digest": "hahahahahaha",
       };

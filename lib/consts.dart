@@ -1,3 +1,5 @@
+// Constant names kept for public API stability.
+// ignore_for_file: non_constant_identifier_names
 import 'dart:math';
 
 final MAX_U8_NUMBER = pow(2, 8) - 1;

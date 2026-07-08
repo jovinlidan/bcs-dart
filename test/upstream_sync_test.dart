@@ -5,7 +5,9 @@ import 'package:bcs_dart/uleb.dart';
 
 void main() {
   group('map sorts entries by serialized key bytes', () {
-    test('single-byte keys serialize in canonical order regardless of insertion', () {
+    test(
+        'single-byte keys serialize in canonical order regardless of insertion',
+        () {
       final t = Bcs.map(Bcs.u8(), Bcs.u8());
       // Inserted out of order; must serialize sorted by key: len=2, (1,10), (2,20)
       final bytes = t.serialize({2: 20, 1: 10}).toBytes();
@@ -35,7 +37,10 @@ void main() {
     test('lexicographic with length tie-break', () {
       expect(compareBcsBytes(u8(1), u8(2)) < 0, true);
       expect(compareBcsBytes(u8(2), u8(1)) > 0, true);
-      expect(compareBcsBytes(Uint8List.fromList([1]), Uint8List.fromList([1, 0])) < 0, true);
+      expect(
+          compareBcsBytes(Uint8List.fromList([1]), Uint8List.fromList([1, 0])) <
+              0,
+          true);
       expect(compareBcsBytes(u8(1), u8(1)), 0);
     });
   });
@@ -65,7 +70,8 @@ void main() {
 
     test('round-trips', () {
       final t = Bcs.byteVector();
-      expect(t.parse(t.serialize([9, 8, 7]).toBytes()), equals(Uint8List.fromList([9, 8, 7])));
+      expect(t.parse(t.serialize([9, 8, 7]).toBytes()),
+          equals(Uint8List.fromList([9, 8, 7])));
     });
   });
 

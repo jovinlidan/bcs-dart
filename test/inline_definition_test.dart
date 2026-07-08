@@ -32,7 +32,8 @@ void main() {
 
     test("should not contain a trace of the temp struct", () {
       final bcs = LegacyBCS(getSuiMoveConfig());
-      final _sr = bcs.ser({"name": "string", "age": "u8"}, {"name": "Charlie", "age": 10}).hex();
+      bcs.ser({"name": "string", "age": "u8"},
+          {"name": "Charlie", "age": 10}).hex();
 
       expect(bcs.hasType("temp-struct"), false);
     });

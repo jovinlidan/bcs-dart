@@ -32,7 +32,7 @@ void main() {
       bcs.registerAlias("MyString", LegacyBCS.STRING);
       bcs.registerAlias(LegacyBCS.STRING, "MyString");
 
-      var error = null;
+      Object? error;
       try {
         serde(bcs, "MyString", value);
       } catch (e) {
